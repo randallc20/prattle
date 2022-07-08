@@ -1,6 +1,10 @@
 class ApplicationController < Sinatra::Base
   set :default_content_type, "application/json"
 
+  # get "/" do
+  #   { thing: "thing1", thing2: "item" }.to_json
+  # end
+
   # get "/messages" do
   #   Message.all.order(:created_at).to_json
   # end
