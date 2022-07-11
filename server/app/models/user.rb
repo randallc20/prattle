@@ -3,6 +3,9 @@ class User < ActiveRecord::Base
   has_many :user_pairs, through: :user_connections
   has_many :pair_messages
 
+  # this method comes from active record. adds salt to our passwords. salt is a randomized string with our password encrypted inside the string.
+  has_secure_password
+
   # helper methods
   def pairs
     self.user_connections.map { |user_connection| user_connection.user_pair }
