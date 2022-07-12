@@ -1,3 +1,5 @@
+require "pry"
+
 class ApplicationController < Sinatra::Base
   set :default_content_type, "application/json"
 
@@ -6,8 +8,42 @@ class ApplicationController < Sinatra::Base
     set :session_secret, "secret"
   end
 
-  get "/login" do
+  post "/login" do
+    user = User.find_by(username: params[:username])
+    if user && user.authenticate(params[:password])
+      session[:user_id] = user.id
+      return { success: true }.to_json
+    else
+      return { success: false }.to_json
+    end
   end
+
+  get "/users" do
+    User.all.to_json
+  end
+
+  get "/users/:id" do
+    user = User.find_by(id: params[:id])
+    user.to_json
+  end
+
+  get "/users/:id/messages" do
+    user = User.find_by(id: params[:id])
+    user.pair_messages.to_json
+  end
+
+  get "/users/:id/messages/:pair_username" do
+    user = User.find_by(id: params[:id])
+    pair = User.find_by(username: params[:pair_username])
+    user.current_pair_messages(pair).to_json
+  end
+
+  get "/" do
+    "Hello World"
+  end
+
+  #   User.all.to_json(include: {self.friends})
+  # end
 
   # Faye::WebSocket.load_adapter("thin")
 
