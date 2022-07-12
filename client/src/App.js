@@ -6,7 +6,7 @@ import SignUp from './components/SignUp';
 
 function App() {
   return (
-    <SignUp />
+    <Hero />
     // <BrowserRouter>
     //   <Routes>
     //     <Route exact path="/" element={<Header />}></Route>
