@@ -1,14 +1,14 @@
-import React from 'react';
-import PrattleLogo from '../assets/PrattleLogo.png';
-import { MenuIcon } from '@heroicons/react/outline';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import PrattleLogo from "../assets/PrattleLogo.png";
+import { MenuIcon } from "@heroicons/react/outline";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
-  const history = useNavigate();
+  // const history = useNavigate();
 
   function signIn(e) {
     e.preventDefault();
-    console.log('THis is where the log in functionality is');
+    console.log("THis is where the log in functionality is");
   }
 
   return (

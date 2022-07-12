@@ -4,10 +4,16 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
+import { CookiesProvider } from "react-cookie";
 
 function App() {
   return (
-    <Hero />
+    <>
+      <Header />
+      <CookiesProvider>
+        <LogIn />
+      </CookiesProvider>
+    </>
     // <BrowserRouter>
     //   <Routes>
     //     <Route exact path="/" element={<Header />}></Route>
