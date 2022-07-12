@@ -7,7 +7,7 @@ import LogIn from "./components/LogIn";
 
 function App() {
   return (
-    <LogIn />
+    <Hero />
     // <BrowserRouter>
     //   <Routes>
     //     <Route exact path="/" element={<Header />}></Route>
