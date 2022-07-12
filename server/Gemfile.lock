@@ -26,9 +26,6 @@ GEM
     eventmachine (1.2.7)
     faker (2.19.0)
       i18n (>= 1.6, < 2)
-    faye-websocket (0.11.1)
-      eventmachine (>= 0.12.0)
-      websocket-driver (>= 0.5.1)
     ffi (1.15.3)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
@@ -89,12 +86,10 @@ GEM
     tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    websocket-driver (0.7.5)
-      websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.5)
     zeitwerk (2.4.2)
 
 PLATFORMS
+  arm64-darwin-21
   universal-darwin-20
   x86_64-darwin-19
   x86_64-linux
@@ -104,7 +99,6 @@ DEPENDENCIES
   bcrypt
   database_cleaner (~> 2.0)
   faker
-  faye-websocket
   pry (~> 0.14.1)
   rack-contrib (~> 2.3)
   rack-cors (~> 1.1)
