@@ -1,9 +1,11 @@
 puts "🌱 Seeding..."
 
-user_one = User.create(username: "xpersonx", logged_in: false)
-user_two = User.create(username: "harriet_tubman", logged_in: false)
-user_three = User.create(username: "MaxPain2375", logged_in: false)
-user_four = User.create(username: "Enora", logged_in: false)
+user_one = User.create(username: "xpersonx", password: "123", logged_in: false)
+user_two =
+  User.create(username: "harriet_tubman", password: "123", logged_in: false)
+user_three =
+  User.create(username: "MaxPain2375", password: "123", logged_in: false)
+user_four = User.create(username: "Enora", password: "123", logged_in: false)
 
 pair_one =
   UserPair.create(friend: false, user1_id: user_one.id, user2_id: user_two.id)

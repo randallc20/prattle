@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Hero from './components/Hero';
-import Header from './components/Header';
-import Home from './components/Home';
-import SignUp from './components/SignUp';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Hero from "./components/Hero";
+import Header from "./components/Header";
+import Home from "./components/Home";
+import SignUp from "./components/SignUp";
+import LogIn from "./components/LogIn";
 
 function App() {
   return (
