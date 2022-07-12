@@ -47,4 +47,31 @@ message_seven =
 message_eight =
   PairMessage.create(user: user_three, user_pair: pair_two, body: "oh! gotcha.")
 
+channel1 = Channel.create(channel_name: "channel 1")
+channel2 = Channel.create(channel_name: "channel 2")
+
+channel1_user1 = ChannelUser.create(channel_id: 1, user_id: 1)
+channel1_user2 = ChannelUser.create(channel_id: 1, user_id: 2)
+channel1_user3 = ChannelUser.create(channel_id: 1, user_id: 3)
+channel1_user4 = ChannelUser.create(channel_id: 1, user_id: 4)
+channel2_user5 = ChannelUser.create(channel_id: 2, user_id: 4)
+channel2_user6 = ChannelUser.create(channel_id: 2, user_id: 2)
+
+channel1_message1 =
+  ChannelMessage.create(channel_id: 1, user_id: 1, body: "hello, everyone!")
+channel1_message2 = ChannelMessage.create(channel_id: 1, user_id: 3, body: "yo")
+channel1_message3 =
+  ChannelMessage.create(channel_id: 1, user_id: 4, body: "hiya!")
+channel1_message4 =
+  ChannelMessage.create(
+    channel_id: 1,
+    user_id: 1,
+    body: "anything interesting?"
+  )
+
+channel2_message1 =
+  ChannelMessage.create(channel_id: 2, user_id: 4, body: "anyone here?")
+channel2_message2 =
+  ChannelMessage.create(channel_id: 2, user_id: 2, body: "just me")
+
 puts "✅ Done seeding!"

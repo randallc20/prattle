@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
   has_many :user_connections
   has_many :user_pairs, through: :user_connections
   has_many :pair_messages
+  has_many :channel_users
+  has_many :channels, through: :channel_users
 
   # this method comes from active record. adds salt to our passwords. salt is a randomized string with our password encrypted inside the string.
   has_secure_password
@@ -80,6 +82,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def remove_friend(user)
+    if (friends?(user))
+      self.pair?(user).update(friend: false)
+    else
+      "You aren't friends with this person!"
+    end
+  end
+
   def send_pair_message(user, message)
     create_connection(user) if (!connection?(user))
     pair = self.pair?(user)
@@ -93,5 +103,14 @@ class User < ActiveRecord::Base
     else
       "You haven't started a conversation with this person yet"
     end
+  end
+
+  def serialize_user
+    user_hash = {
+      "id" => self.attributes["id"],
+      "username" => self.attributes["username"]
+    }
+    pair_hash = self.pairs.map { |pair| pair.attributes }
+    user_hash.merge!("pairs" => pair_hash)
   end
 end
