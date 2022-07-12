@@ -1,17 +1,35 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [screenName, setScreenName] = useState('');
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    email: '',
+    name: '',
+  });
+
+  function handleChange(e) {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
 
   function handleFormSubmit(e) {
-    console.log(email);
-    console.log(password);
-    console.log(name);
-    console.log(screenName);
+    e.preventDefault();
+    console.log(formData);
+    fetch('http://localhost:9292', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => setSuccess(data.success))
+      .catch((error) => window.alert(error));
   }
+
   return (
     <div className="flex w-full h-screen">
       {/* this is the ball */}
@@ -31,9 +49,10 @@ function SignUp() {
                 className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                 placeholder="Enter your email..."
                 type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                onChange={(e) => handleChange(e)}
+                value={formData.email}
+                autoFocus={true}
               />
             </div>
             <div className="flex flex-col mt-4">
@@ -42,9 +61,9 @@ function SignUp() {
                 className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                 placeholder="Enter your password..."
                 type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                onChange={(e) => handleChange(e)}
+                value={formData.password}
               />
             </div>
             <div className="flex flex-col mt-4">
@@ -53,24 +72,29 @@ function SignUp() {
                 className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                 placeholder="Enter your full name..."
                 type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="name"
+                onChange={(e) => handleChange(e)}
+                value={formData.name}
               />
             </div>
             <div className="flex flex-col mt-4">
-              <label className="text-lg font-medium">Screen Name</label>
+              <label className="text-lg font-medium">Username</label>
               <input
                 className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                 placeholder="Enter your screen name..."
                 type="text"
-                id="screenName"
-                value={screenName}
-                onChange={(e) => setScreenName(e.target.value)}
+                name="username"
+                onChange={(e) => handleChange(e)}
+                value={formData.username}
               />
             </div>
             <div className="mt-8 flex flex-col gap-y-4">
-              <button className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-violet-500 rounded-xl text-white font-bold text-lg">
+              <button
+                className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-violet-500 rounded-xl text-white font-bold text-lg"
+                onClick={() => {
+                  navigate('/');
+                }}
+              >
                 Sign Up
               </button>
             </div>
