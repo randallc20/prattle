@@ -4,8 +4,8 @@ source "https://rubygems.org"
 # https://github.com/sinatra/sinatra
 gem "sinatra", "~> 2.1"
 
-gem 'faye-websocket', require: 'faye/websocket'
-gem 'bcrypt'
+# gem "faye-websocket", require: "faye/websocket"
+gem "bcrypt"
 
 # A fast and simple web server
 # https://github.com/macournoyer/thin

@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Hero() {
-  // const navigate = useNavigate();
-  const [userLogin, setUserLogin] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  function handleChange(e) {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  function handleSubmit(e) {
     e.preventDefault();
-    // findCurrentUser(userLogin);
-    console.log('submitting login');
-  };
+    console.log(formData);
+    fetch('http://localhost:9292/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => setSuccess(data.success))
+      .catch((error) => window.alert(error));
+  }
 
   return (
     <div className="flex w-full h-screen">
@@ -24,14 +42,14 @@ function Hero() {
         <form onSubmit={handleSubmit}>
           <div className="mt-8">
             <div className="flex flex-col">
-              <label className="text-lg font-medium">Email</label>
+              <label className="text-lg font-medium">Username</label>
               <input
                 className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                placeholder="Enter your email..."
-                type="email"
-                id="email"
-                value={userLogin}
-                // onChange={handleChange}
+                placeholder="Enter your username..."
+                type="text"
+                name="username"
+                onChange={(e) => handleChange(e)}
+                value={formData.username}
                 autoFocus={true}
               />
             </div>
@@ -40,7 +58,11 @@ function Hero() {
               <input
                 className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                 placeholder="Enter your password..."
-                type={'password'}
+                type="password"
+                name="password"
+                // onChange={handleChange}
+                onChange={(e) => handleChange(e)}
+                value={formData.password}
               />
             </div>
             <div className="mt-8 flex justify-between items-center">
@@ -56,7 +78,9 @@ function Hero() {
             <div className="mt-8 flex justify-center items-center">
               <p className="font-medium text-base">Don't have an account?</p>
               <button
-                // onClick={navigateToSignUp}
+                onClick={() => {
+                  navigate('/SignUp');
+                }}
                 className="ml-2 font-medium text-base text-violet-500"
               >
                 Sign up
@@ -64,6 +88,13 @@ function Hero() {
             </div>
           </div>
         </form>
+        <div>
+          {success ? (
+            <h3>{navigate('/home')}</h3>
+          ) : (
+            <h3>You are not logged in yet.</h3>
+          )}
+        </div>
       </div>
     </div>
   );
