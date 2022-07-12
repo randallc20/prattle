@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import { useCookies } from "react-cookie";
 
 function LogIn() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
-  const [success, setSuccess] = useState(false);
+  const [response, setResponse] = useState({});
+  const [userInfo, setUserInfo] = useState({});
+  //   const [savedCookie, setSavedCookie] = useState({});
+  //   const [cookies, setCookie, removeCookie] = useCookies([""]);
 
   function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,7 +26,19 @@ function LogIn() {
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then((data) => setSuccess(data.success))
+      .then((data) => {
+        setResponse(data);
+        // setCookie("x-access-token", data["x-access-token"]);
+        // setSavedCookie({ cookie: data["x-access-token"] });
+      })
+      .catch((error) => window.alert(error));
+  }
+  console.log(response);
+  function handleInfoClick(e) {
+    e.preventDefault();
+    fetch(`http://localhost:9292/users/${response.user_id}`)
+      .then((response) => response.json())
+      .then((data) => setUserInfo(data))
       .catch((error) => window.alert(error));
   }
 
@@ -46,11 +62,16 @@ function LogIn() {
         <input type="submit" onClick={handleSubmit} />
       </form>
       <div>
-        {success ? (
+        {response.success ? (
           <h3>You successfully logged in!</h3>
         ) : (
           <h3>You are not logged in yet.</h3>
         )}
+      </div>
+      <div>
+        <button onClick={(e) => handleInfoClick(e)}>Get Info</button>
+        <p>Username: {userInfo.username}</p>
+        <p>ID: {userInfo.id}</p>
       </div>
     </div>
     // <div className="flex w-full h-screen">
