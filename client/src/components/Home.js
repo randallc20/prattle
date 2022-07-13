@@ -1,18 +1,18 @@
-import React from 'react';
+import React from "react";
 import {
   ChevronDownIcon,
   PlusIcon,
   HashtagIcon,
   SearchIcon,
-} from '@heroicons/react/outline';
-import { MicrophoneIcon, PhoneIcon, CogIcon } from '@heroicons/react/solid';
-import PrattleLogo from '../assets/PrattleLogo.png';
-import Chat from '../components/Chat';
-import Channel from '../components/Channel';
+} from "@heroicons/react/outline";
+import { MicrophoneIcon, PhoneIcon, CogIcon } from "@heroicons/react/solid";
+import PrattleLogo from "../assets/PrattleLogo.png";
+import Chat from "../components/Chat";
+import Channel from "../components/Channel";
 
 function Home() {
   const handleAddChannel = () => {
-    const channelName = prompt('Enter a new channel name');
+    const channelName = prompt("Enter a new channel name");
     console.log(channelName);
   };
 
