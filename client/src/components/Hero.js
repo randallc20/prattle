@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Hero({ setResponse, response }) {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -16,15 +16,18 @@ function Hero({ setResponse, response }) {
   function handleSubmit(e) {
     e.preventDefault();
     console.log(formData);
-    fetch('http://localhost:9292/login', {
-      method: 'POST',
+    fetch("http://localhost:9292/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then((data) => setResponse(data))
+      .then((data) => {
+        setResponse(data);
+        navigate("/home");
+      })
       .catch((error) => window.alert(error));
   }
 
@@ -79,7 +82,7 @@ function Hero({ setResponse, response }) {
               <p className="font-medium text-base">Don't have an account?</p>
               <button
                 onClick={() => {
-                  navigate('/SignUp');
+                  navigate("/SignUp");
                 }}
                 className="ml-2 font-medium text-base text-violet-500"
               >
@@ -88,13 +91,13 @@ function Hero({ setResponse, response }) {
             </div>
           </div>
         </form>
-        <div>
+        {/* <div>
           {response.success ? (
             <h3>{navigate('/home')}</h3>
           ) : (
             <h3>You are not logged in yet.</h3>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Hero from './components/Hero';
-import Header from './components/Header';
-import Home from './components/Home';
-import SignUp from './components/SignUp';
-import LogIn from './components/LogIn';
-import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import Hero from "./components/Hero";
+import Header from "./components/Header";
+import Home from "./components/Home";
+import SignUp from "./components/SignUp";
+import LogIn from "./components/LogIn";
+import React, { useState, useEffect } from "react";
 
 // let ws;
 // function establishWSConnection() {
@@ -46,18 +46,21 @@ import React, { useState, useEffect } from 'react';
 // establishWSConnection();
 
 function App() {
-  const [response, setResponse] = useState([]);
-  const [user, setUser] = useState({});
+  const [response, setResponse] = useState(null);
+  // const [user, setUser] = useState({});
 
-  useEffect(() => {
-    fetch(`http://localhost:9292/users/${response.user_id}`)
-      .then((response) => response.json())
-      .then((data) => setUser(data))
-      .catch((error) => window.alert(error));
-  }, [response]);
+  // let navigate = useNavigate();
 
-  console.log(response);
-  console.log(user);
+  // useEffect(() => {
+  //   fetch(`http://localhost:9292/users/${response.user_id}`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("in the fetch");
+  //       setUser(data);
+  //       navigate("/home");
+  //     })
+  //     .catch((error) => window.alert(error));
+  // }, [response]);
 
   return (
     <BrowserRouter>
@@ -78,7 +81,11 @@ function App() {
         <Route exact path="/SignUp" element={<SignUp />}></Route>
       </Routes>
       <Routes>
-        <Route exact path="/home" element={<Home user={user} />}></Route>
+        <Route
+          exact
+          path="/home"
+          element={<Home response={response} />}
+        ></Route>
       </Routes>
       {/* <Routes>
         <Route exact path="/channel:id" element={<Home />}></Route>
