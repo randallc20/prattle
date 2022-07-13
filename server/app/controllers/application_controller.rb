@@ -30,10 +30,6 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  post "/logout" do
-    return { success: false, user_id: 0, message: "log out successful" }
-  end
-
   ###### signup
   post "/signup" do
     user = User.find_by(username: params[:username])
@@ -64,7 +60,7 @@ class ApplicationController < Sinatra::Base
   ## returns the same user data as /users, but for a single person
   get "/users/:id" do
     user = User.find_by(id: params[:id])
-    user.to_json(only: %i[username id], include: :channels)
+    user.serialize_user.to_json
   end
 
   ## returns all of the messages sent by this particular user. Not sure how helpful this will be.
@@ -82,10 +78,10 @@ class ApplicationController < Sinatra::Base
 
   ## returns a list of all of the channel names
   get "/channels" do
-    Channel.all.to_json
+    Channel.all.to_json(include: :channel_messages)
   end
 
-  ## returns a list of all of the channel names
+  ## creates a new channel
   post "/channels" do
     Channel.create(channel_name: params[:channelName]).to_json
   end
@@ -93,7 +89,7 @@ class ApplicationController < Sinatra::Base
   ## returns all the messages for a particular channel
   get "/channels/:channelName/messages" do
     channel = Channel.find_by(channel_name: params[:channelName])
-    channel.channel_messages.to_json
+    channel.serialize_channel_messages.to_json
   end
 
   ## gives a list of available endpoints for this API
