@@ -32,12 +32,21 @@ function Home({ response }) {
   }, []);
 
   const handleAddChannel = () => {
-    const channelName = prompt('Enter a new channel name');
-    console.log('This is where we are making a new channel: ' + channelName);
-    if (channelName) {
+    const newChannelName = prompt('Enter a new channel name');
+    console.log('This is where we are making a new channel: ' + newChannelName);
+    if (newChannelName) {
       //add the channel to the database - do I need a form?
     }
   };
+
+  function handleAddFriend() {
+    //need user id of logged in user
+    //and the username of the new friend or the id of new friend
+    const newFriendName = prompt('Enter a new friend name');
+    console.log('This is the name of a new friend: ' + newFriendName);
+    if (newFriendName) {
+    }
+  }
 
   function handleSettings() {
     //this will be a popup
@@ -58,6 +67,14 @@ function Home({ response }) {
               <h2 className="flex text-white font-bold text-sm items-center justify-between border-b border-gray-800 p-4 hover:bg-[#34373C] cursor-pointer">
                 Chanel Names
               </h2>
+              <div className="flex bg-[#202225] text-xs p-1 rounded-md">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="bg-[#202225] focus:outline-none text-white pl-1 placeholder-[#72767d]"
+                />
+                <SearchIcon className="h-4 text-[#72767d] mr-1" />
+              </div>
               <div className="text-[#8e9297] flex-grow overflow-y-scroll scrollbar-hide">
                 <div className="flex items-center p-2 mb-2">
                   <h4 className="font-semibold ">Channels</h4>
@@ -115,9 +132,16 @@ function Home({ response }) {
             </div>
             <div className="bg-[#2f3136] flex flex-col min-w-max">
               <h2 className="flex text-white font-bold text-sm items-center justify-between border-b border-gray-800 p-4 hover:bg-[#34373C] cursor-pointer">
-                This Will be a list of friends
+                Amigos
               </h2>
               <div className="text-[#8e9297] flex-grow overflow-y-scroll scrollbar-hide">
+                <div className="flex items-center p-2 mb-2">
+                  <h4 className="font-semibold ">Friends</h4>
+                  <PlusIcon
+                    className="h-6 ml-auto cursor-pointer hover:text-white"
+                    onClick={handleAddFriend}
+                  />
+                </div>
                 <div className="flex flex-col space-y-2 px-2 mb-4">
                   {user.friends.map((friend) => (
                     <Friend
@@ -126,18 +150,6 @@ function Home({ response }) {
                       friendName={friend.username}
                     />
                   ))}
-                </div>
-              </div>
-              <div className="bg-[#292b2f] p-2 flex justify-between items-center space-x-8">
-                <div className="text-gray-400 flex items-center">
-                  <div className="flex bg-[#202225] text-xs p-1 rounded-md">
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      className="bg-[#202225] focus:outline-none text-white pl-1 placeholder-[#72767d]"
-                    />
-                    <SearchIcon className="h-4 text-[#72767d] mr-1" />
-                  </div>
                 </div>
               </div>
             </div>
