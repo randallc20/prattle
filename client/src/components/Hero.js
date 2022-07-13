@@ -25,8 +25,12 @@ function Hero({ setResponse, response }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setResponse(data);
-        navigate("/home");
+        if (data.success) {
+          setResponse(data);
+          navigate("/home");
+        } else {
+          alert("Please try again!");
+        }
       })
       .catch((error) => window.alert(error));
   }

@@ -72,6 +72,26 @@ class User < ActiveRecord::Base
     end
   end
 
+  def channel_connection?(channel)
+    connection =
+      self.channel_users.find do |channel_user|
+        channel_user.channel_id == channel.id
+      end
+    if connection
+      return connection
+    else
+      return false
+    end
+  end
+
+  def create_channel_connection(channel)
+    if (!channel_connection?(channel))
+      ChannelUser.create(user_id: self.id, channel_id: channel.id)
+    else
+      "You already have a connection with this channel!"
+    end
+  end
+
   # methods meant to be used to communicate with front end
   def become_friends(user)
     create_connection(user) if (!connection?(user))
@@ -96,6 +116,12 @@ class User < ActiveRecord::Base
     PairMessage.create(user: self, user_pair: pair, body: message)
   end
 
+  # def send_channel_message(channel, message)
+  #   create_channel_connection(channel) if (!channel_connection?(channel))
+  #   post_to = self.pair?(user)
+  #   PairMessage.create(user: self, user_pair: pair, body: message)
+  # end
+
   def current_pair_messages(user)
     messages = self.pair?(user).pair_messages
     if messages
@@ -111,6 +137,15 @@ class User < ActiveRecord::Base
       "username" => self.attributes["username"]
     }
     pair_hash = self.pairs.map { |pair| pair.attributes }
-    user_hash.merge!("pairs" => pair_hash)
+    friends_hash =
+      self.friends.map do |friend|
+        {
+          "username" => friend.attributes["username"],
+          "id" => friend.attributes["id"]
+        }
+      end
+    channels_hash = self.channels.map { |channel| channel.attributes }
+    user_hash.merge!("friends" => friends_hash)
+    user_hash.merge!("channels" => channels_hash)
   end
 end

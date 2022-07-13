@@ -100,17 +100,15 @@ function Home({ response }) {
                 This Will be a list of friends
               </h2>
               <div className="text-[#8e9297] flex-grow overflow-y-scroll scrollbar-hide">
-                <ol>THIS IS TEST FREIND 1</ol>
-                <ol>TEST FREIND 2</ol>
-                {/* <div className="flex flex-col space-y-2 px-2 mb-4">
-                {data.friends.map((friend) => (
-                  <Friend
-                    key={friend.id}
-                    id={friend.id}
-                    friendName={friend.name}
-                  />
-                ))}
-              </div> */}
+                <div className="flex flex-col space-y-2 px-2 mb-4">
+                  {user.friends.map((friend) => (
+                    <Friend
+                      key={friend.id}
+                      id={friend.id}
+                      friendName={friend.username}
+                    />
+                  ))}
+                </div>
               </div>
               <div className="bg-[#292b2f] p-2 flex justify-between items-center space-x-8">
                 <div className="text-gray-400 flex items-center">
