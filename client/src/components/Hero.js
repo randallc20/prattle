@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Hero({ setUser }) {
+function Hero({ setResponse, response }) {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -24,7 +24,7 @@ function Hero({ setUser }) {
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then((data) => setUser(data.success))
+      .then((data) => setResponse(data))
       .catch((error) => window.alert(error));
   }
 
@@ -89,7 +89,7 @@ function Hero({ setUser }) {
           </div>
         </form>
         <div>
-          {success ? (
+          {response.success ? (
             <h3>{navigate('/home')}</h3>
           ) : (
             <h3>You are not logged in yet.</h3>

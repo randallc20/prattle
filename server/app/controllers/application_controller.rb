@@ -93,7 +93,7 @@ class ApplicationController < Sinatra::Base
   ## returns all the messages for a particular channel
   get "/channels/:channelName/messages" do
     channel = Channel.find_by(channel_name: params[:channelName])
-    channel.messages.to_json
+    channel.channel_messages.to_json
   end
 
   ## gives a list of available endpoints for this API
