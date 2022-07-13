@@ -24,27 +24,16 @@ class ApplicationController < Sinatra::Base
   post "/login" do
     user = User.find_by(username: params[:username])
     if user && user.authenticate(params[:password])
-      if (user.logged_in)
-        return(
-          {
-            success: false,
-            user_id: 0,
-            message: "user already logged in"
-          }.to_json
-        )
-      else
-        user.update(logged_in: true)
-        return { success: true, user_id: user.id, message: "success" }.to_json
-      end
+      return { success: true, user_id: user.id, message: "success" }.to_json
     else
       return { success: false, user_id: 0, message: "please try again" }.to_json
     end
   end
 
-  post "/logout" do
-    user = User.find_by(id: params[:id])
-    user.update(logged_in: false)
-  end
+  # post "/logout" do
+  #   user = User.find_by(id: params[:id])
+  #   user.update(logged_in: false)
+  # end
 
   ###### signup
   post "/signup" do
