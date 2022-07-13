@@ -54,20 +54,17 @@ function Home({ user }) {
           </div>
           <div className="bg-[#292b2f] p-2 flex justify-between items-center space-x-8">
             {/* this is how to display a user info section at the bottom */}
-            {/* <div className="flex items-center space-x-1">
-              <img
+            <div className="flex items-center space-x-1">
+              {/* <img
                 src={user image}
                 alt=""
                 className="h-10 rounded-full"
                 onClick={signOut}
-              />
+              /> */}
               <h4 className="text-white text-xs font-medium">
-                {userName}{" "}
-                <span className="text-[#b9bbbe] block">
-                  #{userId}
-                </span>
+                <span className="text-[#b9bbbe] block">#{user.username}</span>
               </h4>
-            </div> */}
+            </div>
             <div className="text-gray-400 flex items-center">
               <div className="hover:bg-[#3A3C43] p-2 rounded-md">
                 <CogIcon className="h-5 icon" onClick={handleSettings} />
