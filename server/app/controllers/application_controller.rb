@@ -62,6 +62,30 @@ class ApplicationController < Sinatra::Base
     User.all.to_json(only: %i[username id], include: :channels)
   end
 
+  ## find users using a search term
+  get "/users/search/:username" do
+    matches =
+      User.all.filter { |user| user["username"].include?(params["username"]) }
+    matches
+      .map do |match|
+        { "user_id" => match["id"], "username" => match["username"] }
+      end
+      .to_json
+  end
+
+  ## find channels using a search term
+  get "/channels/search/:channel_name" do
+    matches =
+      Channel.all.filter do |channel|
+        channel["channel_name"].include?(params["channel_name"])
+      end
+    matches
+      .map do |match|
+        { "channel_id" => match["id"], "channel_name" => match["channel_name"] }
+      end
+      .to_json
+  end
+
   ## returns the same user data as /users, but for a single person
   get "/users/:id" do
     user = User.find_by(id: params[:id])
