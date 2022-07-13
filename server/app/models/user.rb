@@ -50,6 +50,7 @@ class User < ActiveRecord::Base
       end
       .compact
       .flatten
+      .sort { |a, b| a["username"].downcase <=> b["username"].downcase }
   end
 
   def friends?(user)
@@ -144,7 +145,8 @@ class User < ActiveRecord::Base
           "id" => friend.attributes["id"]
         }
       end
-    channels_hash = self.channels.map { |channel| channel.attributes }
+    channels_hash =
+      self.channels.sort_channels.map { |channel| channel.attributes }
     user_hash.merge!("friends" => friends_hash)
     user_hash.merge!("channels" => channels_hash)
   end

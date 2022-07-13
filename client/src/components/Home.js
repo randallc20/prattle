@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChevronDownIcon,
   PlusIcon,
   HashtagIcon,
   SearchIcon,
-} from '@heroicons/react/outline';
-import { MicrophoneIcon, PhoneIcon, CogIcon } from '@heroicons/react/solid';
-import PrattleLogo from '../assets/PrattleLogo.png';
-import Chat from '../components/Chat';
-import Channel from '../components/Channel';
-import Friend from '../components/Friend';
+} from "@heroicons/react/outline";
+import { MicrophoneIcon, PhoneIcon, CogIcon } from "@heroicons/react/solid";
+import PrattleLogo from "../assets/PrattleLogo.png";
+import Chat from "../components/Chat";
+import Channel from "../components/Channel";
+import Friend from "../components/Friend";
 
 function Home({ response }) {
   const [user, setUser] = useState(null);
@@ -20,7 +20,7 @@ function Home({ response }) {
 
   useEffect(() => {
     if (!response) {
-      navigate('/');
+      navigate("/");
     } else {
       fetch(`http://localhost:9292/users/${response.user_id}`)
         .then((response) => response.json())
@@ -50,12 +50,12 @@ function Home({ response }) {
 
   function handleSettings() {
     //this will be a popup
-    const settingsButton = prompt('This is just to show settings');
+    const settingsButton = prompt("This is just to show settings");
   }
 
   function logOut() {
     response = null;
-    navigate('/');
+    navigate("/");
   }
 
   return (
@@ -128,7 +128,7 @@ function Home({ response }) {
               </div>
             </div>
             <div className="bg-[#36393f] flex-grow">
-              {channel ? <Chat channel={channel} /> : 'loading'}
+              {channel ? <Chat channel={channel} /> : "loading"}
             </div>
             <div className="bg-[#2f3136] flex flex-col min-w-max">
               <h2 className="flex text-white font-bold text-sm items-center justify-between border-b border-gray-800 p-4 hover:bg-[#34373C] cursor-pointer">
@@ -156,7 +156,7 @@ function Home({ response }) {
           </div>
         </>
       ) : (
-        'Loading...'
+        "Loading..."
       )}
     </>
   );

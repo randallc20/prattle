@@ -4,6 +4,10 @@ class Channel < ActiveRecord::Base
   has_many :sub_channels
   has_many :channel_messages
 
+  def self.sort_channels
+    self.order("channel_name")
+  end
+
   def serialize_channel_messages
     channel_hash = {
       "channel_name" => self.attributes["channel_name"],
