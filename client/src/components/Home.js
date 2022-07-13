@@ -14,7 +14,7 @@ import Friend from '../components/Friend';
 
 function Home({ response }) {
   const [user, setUser] = useState(null);
-  const [channel, setChannel] = useState([]);
+  const [channel, setChannel] = useState(null);
 
   let navigate = useNavigate();
 
@@ -111,7 +111,7 @@ function Home({ response }) {
               </div>
             </div>
             <div className="bg-[#36393f] flex-grow">
-              <Chat channel={channel} />
+              {channel ? <Chat channel={channel} /> : 'loading'}
             </div>
             <div className="bg-[#2f3136] flex flex-col min-w-max">
               <h2 className="flex text-white font-bold text-sm items-center justify-between border-b border-gray-800 p-4 hover:bg-[#34373C] cursor-pointer">
