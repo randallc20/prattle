@@ -11,18 +11,21 @@ import Message from './Message';
 
 function Chat({ channel }) {
   const [allMessages, setAllMessages] = useState('');
-  console.log(channel);
 
-  // useEffect(() => {
-  //   fetch(`http://localhost:9292/channels/${channel}/messages`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setAllMessages(data);
-  //     })
-  //     .catch((error) => window.alert(error));
-  // }, []);
+  useEffect(() => {
+    if (!channel) {
+      console.log('do nothing');
+    } else {
+      fetch(`http://localhost:9292/channels/${channel}/messages`)
+        .then((response) => response.json())
+        .then((data) => {
+          setAllMessages(data);
+        })
+        .catch((error) => window.alert(error));
+    }
+  }, []);
 
-  // console.log(allMessages);
+  console.log(allMessages);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -67,19 +70,21 @@ function Chat({ channel }) {
           <QuestionMarkCircleIcon className="icon" />
         </div>
       </header>
-      {/* <main className="flex-grow overflow-y-scroll scrollbar-hide">
-        {allMessages.messages.map((message) => {
-          return (
-            <Message
-              key={message.user.id}
-              username={message.username}
-              user_id={message.user_id}
-              recipient={message.channel_id}
-              message={message.body}
-            />
-          );
-        })}
-      </main> */}
+      <main className="flex-grow overflow-y-scroll scrollbar-hide">
+        {allMessages
+          ? allMessages.messages.map((message) => {
+              return (
+                <Message
+                  // key={message.message_id}
+                  username={message.username}
+                  user_id={message.user_id}
+                  recipient={channel}
+                  message={message.body}
+                />
+              );
+            })
+          : 'lodaing'}
+      </main>
       <div className="flex items-center p-2.5 bg-[#40444b] mx-5 mb-7 rounded-lg">
         <form className="flex-grow">
           <button type="submit" onClick={sendMessage}>
