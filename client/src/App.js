@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import Hero from "./components/Hero";
-import Header from "./components/Header";
-import Home from "./components/Home";
-import SignUp from "./components/SignUp";
-import LogIn from "./components/LogIn";
-import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import Hero from './components/Hero';
+import Header from './components/Header';
+import Home from './components/Home';
+import SignUp from './components/SignUp';
+import LogIn from './components/LogIn';
+import React, { useState, useEffect } from 'react';
 
 // let ws;
 // function establishWSConnection() {
