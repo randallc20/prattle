@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Hero() {
+function Hero({ setUser }) {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -24,7 +24,7 @@ function Hero() {
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then((data) => setSuccess(data.success))
+      .then((data) => setUser(data.success))
       .catch((error) => window.alert(error));
   }
 

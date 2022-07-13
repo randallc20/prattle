@@ -4,15 +4,18 @@ import Header from './components/Header';
 import Home from './components/Home';
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
+import React, { useState } from 'react';
 
 function App() {
+  const [user, setUser] = useState([]);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<Header />}></Route>
       </Routes>
       <Routes>
-        <Route exact path="/" element={<Hero />}></Route>
+        <Route exact path="/" element={<Hero setUser={setUser} />}></Route>
       </Routes>
       <Routes>
         <Route exact path="/SignUp" element={<Header />}></Route>
@@ -21,7 +24,7 @@ function App() {
         <Route exact path="/SignUp" element={<SignUp />}></Route>
       </Routes>
       <Routes>
-        <Route exact path="/home" element={<Home />}></Route>
+        <Route exact path="/home" element={<Home user={user} />}></Route>
       </Routes>
       {/* <Routes>
         <Route exact path="/channel:id" element={<Home />}></Route>
