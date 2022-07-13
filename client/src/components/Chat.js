@@ -10,6 +10,7 @@ import {
 import Message from './Message';
 
 function Chat({ channel }) {
+  const [newMessage, setNewMessage] = useState('');
   const [allMessages, setAllMessages] = useState('');
 
   useEffect(() => {
@@ -19,13 +20,18 @@ function Chat({ channel }) {
       fetch(`http://localhost:9292/channels/${channel}/messages`)
         .then((response) => response.json())
         .then((data) => {
+          console.log('test');
           setAllMessages(data);
         })
         .catch((error) => window.alert(error));
     }
   }, []);
 
-  console.log(allMessages);
+  function handleChange(e) {
+    e.preventDefault();
+    setNewMessage(e.target.value);
+    console.log(newMessage);
+  }
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -87,6 +93,14 @@ function Chat({ channel }) {
       </main>
       <div className="flex items-center p-2.5 bg-[#40444b] mx-5 mb-7 rounded-lg">
         <form className="flex-grow">
+          <input
+            type="text"
+            placeholder="..."
+            className="bg-transparent focus:outline-none text-[#dcddde] w-full placeholder-[#72767d] text-sm"
+            onChange={(e) => handleChange(e)}
+            value={newMessage}
+            autoFocus={true}
+          />
           <button type="submit" onClick={sendMessage}>
             Send
           </button>
