@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import {
   ChevronDownIcon,
   PlusIcon,
@@ -11,14 +11,15 @@ import Chat from '../components/Chat';
 import Channel from '../components/Channel';
 import Friend from '../components/Friend';
 
-function Home() {
+function Home({ user }) {
+  // console.log(user.channels);
+
   const handleAddChannel = () => {
     const channelName = prompt('Enter a new channel name');
     console.log('This is where we are making a new channel: ' + channelName);
     if (channelName) {
       //add the channel to the database - do I need a form?
     }
-
   };
 
   function handleSettings() {
@@ -41,16 +42,15 @@ function Home() {
                 onClick={handleAddChannel}
               />
             </div>
-            <ol># this is where the 2 public channels go</ol>
-            {/* <div className="flex flex-col space-y-2 px-2 mb-4">
-              {data.channels.map((channel) => (
+            <div className="flex flex-col space-y-2 px-2 mb-4">
+              {user.channels.map((channel) => (
                 <Channel
                   key={channel.id}
                   id={channel.id}
                   channelName={channel.channel_name}
                 />
               ))}
-            </div> */}
+            </div>
           </div>
           <div className="bg-[#292b2f] p-2 flex justify-between items-center space-x-8">
             {/* this is how to display a user info section at the bottom */}

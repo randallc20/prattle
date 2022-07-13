@@ -47,8 +47,8 @@ message_seven =
 message_eight =
   PairMessage.create(user: user_three, user_pair: pair_two, body: "oh! gotcha.")
 
-channel1 = Channel.create(channel_name: "channel 1")
-channel2 = Channel.create(channel_name: "channel 2")
+channel1 = Channel.create(channel_name: "dnd")
+channel2 = Channel.create(channel_name: "lol")
 
 channel1_user1 = ChannelUser.create(channel_id: 1, user_id: 1)
 channel1_user2 = ChannelUser.create(channel_id: 1, user_id: 2)

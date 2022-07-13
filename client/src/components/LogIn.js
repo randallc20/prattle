@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { useCookies } from "react-cookie";
+import React, { useState } from 'react';
 
 function LogIn() {
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+    username: '',
+    password: '',
   });
   const [response, setResponse] = useState({});
   const [userInfo, setUserInfo] = useState({});
@@ -18,10 +17,10 @@ function LogIn() {
   function handleSubmit(e) {
     e.preventDefault();
     console.log(formData);
-    fetch("http://localhost:9292/login", {
-      method: "POST",
+    fetch('http://localhost:9292/login', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
     })
