@@ -10,12 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_11_201218) do
+ActiveRecord::Schema.define(version: 2022_07_12_193611) do
+
+  create_table "channel_messages", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "channel_id"
+    t.text "body"
+  end
+
+  create_table "channel_users", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "channel_id"
+  end
+
+  create_table "channels", force: :cascade do |t|
+    t.string "channel_name"
+  end
 
   create_table "pair_messages", force: :cascade do |t|
     t.integer "user_id"
     t.integer "user_pair_id"
     t.text "body"
+  end
+
+  create_table "sub_channel_messages", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "sub_channel_id"
+    t.text "body"
+  end
+
+  create_table "sub_channels", force: :cascade do |t|
+    t.string "sub_channel_name"
+    t.integer "channel_id"
   end
 
   create_table "user_connections", force: :cascade do |t|

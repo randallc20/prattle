@@ -6,6 +6,45 @@ import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import React, { useState } from 'react';
 
+// let ws;
+// function establishWSConnection() {
+//   ws = new WebSocket("ws://localhost:3001/");
+// }
+
+// if (ws !== null) {
+//   ws.on("open", function open() {
+//     ws.send("something");
+//   });
+
+//   ws.on("message", function message(data) {
+//     console.log("received: %s", data);
+//   });
+// }
+
+// establishWSConnection();
+// function establishWSConnection() {
+//   WebSocket = require("faye-websocket");
+//   ws = new WebSocket.Client("ws://localhost:3001/");
+// }
+
+// if (ws !== null) {
+//   ws.on("open", (e) => {
+//     console.log("open");
+//     ws.send("Hello, world!");
+//   });
+
+//   ws.on("message", (e) => {
+//     console.log("message", e.data);
+//   });
+
+//   ws.on("close", (e) => {
+//     console.log("close", e.code, e.reason);
+//     ws = null;
+//   });
+// }
+
+// establishWSConnection();
+
 function App() {
   const [user, setUser] = useState([]);
 

@@ -1,6 +1,6 @@
-import React from 'react';
-import { TrashIcon } from '@heroicons/react/solid';
-import moment from 'moment';
+import React from "react";
+import { TrashIcon } from "@heroicons/react/solid";
+import moment from "moment";
 
 function Message({ id, message, timestamp, name, email, photoURL }) {
   return (
@@ -16,7 +16,7 @@ function Message({ id, message, timestamp, name, email, photoURL }) {
             {name}
           </span>
           <span className="text-[#72767d] text-xs">
-            {moment(timestamp?.toDate().getTime()).format('lll')}
+            {moment(timestamp?.toDate().getTime()).format("lll")}
           </span>
         </h4>
         <p className="text-sm text-[#dcddde]">{message}</p>

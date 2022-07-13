@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   ChevronDownIcon,
   PlusIcon,
@@ -18,6 +18,7 @@ function Home() {
     if (channelName) {
       //add the channel to the database - do I need a form?
     }
+
   };
 
   function handleSettings() {
