@@ -15,7 +15,8 @@ class Channel < ActiveRecord::Base
         {
           "username" => username,
           "user_id" => channel_message.attributes["user_id"],
-          "body" => channel_message.attributes["body"]
+          "body" => channel_message.attributes["body"],
+          "message_id" => channel_message.attributes["id"]
         }
       end
     channel_hash.merge!("messages" => messages_hash)
