@@ -16,13 +16,18 @@ function Home({ response }) {
   const [user, setUser] = useState(null);
   const [recipient, setRecipient] = useState(null);
   const [allUserChannels, setAllUserChannels] = useState(null);
-  const [channelSearch, setChannelSearch] = useState('');
-  const [sendChannelSearch, setSendChannelSearch] = useState('');
+  const [friendsList, setFriendsList] = useState(null);
+  const [channelSearch, setChannelSearch] = useState("");
+  const [sendChannelSearch, setSendChannelSearch] = useState("");
 
   let navigate = useNavigate();
 
   if (user && !allUserChannels) {
     setAllUserChannels(user.channels);
+  }
+
+  if (user && !friendsList) {
+    setFriendsList(user.friends);
   }
 
   useEffect(() => {
@@ -107,11 +112,28 @@ function Home({ response }) {
   };
 
   function handleAddFriend() {
-    //need user id of logged in user
-    //and the username of the new friend or the id of new friend
-    const newFriendName = prompt('Enter a new friend name');
-    console.log('This is the name of a new friend: ' + newFriendName);
+    const newFriendName = prompt("Enter a new friend name");
+    console.log("This is the name of a new friend: " + newFriendName);
     if (newFriendName) {
+      fetch(`http://localhost:9292/user/add_friend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          friendName: newFriendName,
+          userId: response.user_id,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            window.alert(data.error);
+          } else {
+            setFriendsList((friendsList) => [...friendsList, data]);
+          }
+        })
+        .catch((error) => window.alert(error));
     }
   }
 
@@ -247,14 +269,15 @@ function Home({ response }) {
                   />
                 </div>
                 <div className="flex flex-col space-y-2 px-2 mb-4">
-                  {user.friends.map((friend) => (
-                    <Friend
-                      key={friend.id}
-                      id={friend.id}
-                      friendName={friend.username}
-                      setRecipient={setRecipient}
-                    />
-                  ))}
+                  {friendsList
+                    ? friendsList.map((friend) => (
+                        <Friend
+                          key={friend.id}
+                          id={friend.id}
+                          friendName={friend.username}
+                        />
+                      ))
+                    : null}
                 </div>
               </div>
             </div>

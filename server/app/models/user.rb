@@ -95,8 +95,9 @@ class User < ActiveRecord::Base
 
   # methods meant to be used to communicate with front end
   def become_friends(user)
-    create_connection(user) if (!connection?(user))
+    create_connection(user) if (!self.connection?(user))
     if (!friends?(user))
+      binding.pry
       self.pair?(user).update(friend: true)
     else
       "You are already friends with this person!"

@@ -92,6 +92,27 @@ class ApplicationController < Sinatra::Base
     user.serialize_user.to_json
   end
 
+  ## two users become friends
+  post "/user/add_friend" do
+    binding.pry
+    user = User.find_by(id: params[:userId])
+    new_friend = User.find_by(username: params[:friendName])
+    if (new_friend)
+      if (user.friends?(new_friend))
+        { error: "you and #{friendName} are already friends" }.to_json
+      else
+        user.become_friends(new_friend)
+        binding.pry
+        {
+          "username" => new_friend.attributes["username"],
+          "id" => new_friend.attributes["id"]
+        }.to_json
+      end
+    else
+      { error: "#{friendName} does not exist" }.to_json
+    end
+  end
+
   ## returns all of the messages sent by this particular user. Not sure how helpful this will be.
   get "/users/:id/messages" do
     user = User.find_by(id: params[:id])
@@ -137,6 +158,12 @@ class ApplicationController < Sinatra::Base
 
   ## returns all the messages for a particular channel
   get "/channels/:channelName/messages" do
+    channel = Channel.find_by(channel_name: params[:channelName])
+    channel.serialize_channel_messages.to_json
+  end
+
+  ## returns all the messages for a particular channel
+  post "/channels/:channelName/messages" do
     channel = Channel.find_by(channel_name: params[:channelName])
     channel.serialize_channel_messages.to_json
   end
