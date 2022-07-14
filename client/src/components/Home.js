@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ChevronDownIcon,
   PlusIcon,
   HashtagIcon,
   SearchIcon,
-} from "@heroicons/react/outline";
-import { MicrophoneIcon, PhoneIcon, CogIcon } from "@heroicons/react/solid";
-import PrattleLogo from "../assets/PrattleLogo.png";
-import Chat from "../components/Chat";
-import Channel from "../components/Channel";
-import Friend from "../components/Friend";
+} from '@heroicons/react/outline';
+import { MicrophoneIcon, PhoneIcon, CogIcon } from '@heroicons/react/solid';
+import PrattleLogo from '../assets/PrattleLogo.png';
+import Chat from '../components/Chat';
+import Channel from '../components/Channel';
+import Friend from '../components/Friend';
 
 function Home({ response }) {
   const [user, setUser] = useState(null);
-  const [channel, setChannel] = useState(null);
+  const [recipient, setRecipient] = useState(null);
   const [allUserChannels, setAllUserChannels] = useState(null);
   const [friendsList, setFriendsList] = useState(null);
   const [channelSearch, setChannelSearch] = useState("");
@@ -32,7 +32,7 @@ function Home({ response }) {
 
   useEffect(() => {
     if (!response) {
-      navigate("/");
+      navigate('/');
     } else {
       fetch(`http://localhost:9292/users/${response.user_id}`)
         .then((response) => response.json())
@@ -58,15 +58,15 @@ function Home({ response }) {
   }, [sendChannelSearch]);
 
   const handleJoinChannel = () => {
-    const newChannelName = prompt("Enter a channel to join");
+    const newChannelName = prompt('Enter a channel to join');
     console.log(
-      "This is where we are joining a new channel: " + newChannelName
+      'This is where we are joining a new channel: ' + newChannelName
     );
     if (newChannelName) {
       fetch(`http://localhost:9292/channels/join`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           channelName: newChannelName,
@@ -86,13 +86,13 @@ function Home({ response }) {
   };
 
   const handleCreateChannel = () => {
-    const newChannelName = prompt("Enter a new channel name");
-    console.log("This is where we are making a new channel: " + newChannelName);
+    const newChannelName = prompt('Enter a new channel name');
+    console.log('This is where we are making a new channel: ' + newChannelName);
     if (newChannelName) {
-      fetch("http://localhost:9292/channels", {
-        method: "POST",
+      fetch('http://localhost:9292/channels', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           channelName: newChannelName,
@@ -138,13 +138,12 @@ function Home({ response }) {
   }
 
   function handleSettings() {
-    //this will be a popup
-    const settingsButton = prompt("This is just to show settings");
+    const settingsButton = prompt('This is just to show settings one day');
   }
 
   function logOut() {
     response = null;
-    navigate("/");
+    navigate('/');
   }
 
   function handleChannelSearchChange(e) {
@@ -157,8 +156,8 @@ function Home({ response }) {
 
   function handleChannelClearSearch(e) {
     e.preventDefault();
-    setChannelSearch("");
-    setSendChannelSearch("");
+    setChannelSearch('');
+    setSendChannelSearch('');
   }
 
   return (
@@ -183,7 +182,12 @@ function Home({ response }) {
                   className="h-4 text-[#72767d] mr-1"
                 />
               </div>
-              <button onClick={handleChannelClearSearch}>Clear</button>
+              <button
+                className="text-white items-center justify-between border-b border-gray-800 p-4 hover:bg-[#34373C] cursor-pointer"
+                onClick={handleChannelClearSearch}
+              >
+                Clear
+              </button>
               <div className="text-[#8e9297] flex-grow overflow-y-scroll scrollbar-hide">
                 <div className="flex items-center p-2 mb-2">
                   <h4 className="font-semibold ">Join Channel</h4>
@@ -199,7 +203,7 @@ function Home({ response }) {
                           key={channel.id}
                           id={channel.id}
                           channelName={channel.channel_name}
-                          setChannel={setChannel}
+                          setRecipient={setRecipient}
                         />
                       ))
                     : null}
@@ -246,10 +250,10 @@ function Home({ response }) {
               </div>
             </div>
             <div className="bg-[#36393f] flex-grow">
-              {channel ? (
-                <Chat channel={channel} />
+              {recipient ? (
+                <Chat recipient={recipient} user={user} />
               ) : (
-                "Please select a channel or friend"
+                'Please select a channel or friend'
               )}
             </div>
             <div className="bg-[#2f3136] flex flex-col min-w-max">
@@ -280,7 +284,7 @@ function Home({ response }) {
           </div>
         </>
       ) : (
-        "Loading..."
+        'Loading...'
       )}
     </>
   );
