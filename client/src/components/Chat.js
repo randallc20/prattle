@@ -1,25 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { HashtagIcon, SearchIcon } from '@heroicons/react/outline';
+import React, { useState, useEffect, useRef } from "react";
+import { HashtagIcon, SearchIcon } from "@heroicons/react/outline";
 import {
   BellIcon,
   ChatIcon,
   UsersIcon,
   InboxIcon,
   QuestionMarkCircleIcon,
-} from '@heroicons/react/solid';
-import Message from './Message';
+} from "@heroicons/react/solid";
+import Message from "./Message";
 
-function Chat({ recipient, user }) {
-  const [newMessage, setNewMessage] = useState('');
-  const [allMessages, setAllMessages] = useState('');
-  const [searchChat, setSearchChat] = useState('');
-  const [sendSearchChat, setSendSearchChat] = useState('');
+function Chat({ recipient, user, readyToMount, setReadyToMount }) {
+  const [newMessage, setNewMessage] = useState("");
+  const [allChannelMessages, setAllChannelMessages] = useState("");
+  const [allDirectMessages, setAllDirectMessages] = useState("");
+  const [searchChat, setSearchChat] = useState("");
+  const [sendSearchChat, setSendSearchChat] = useState("");
+  const [renderTime, setRenderTime] = useState(0);
+
+  const bottomRef = useRef(null);
 
   useEffect(() => {
+    const timerID = setInterval(() => {
+      setRenderTime(renderTime + 1);
+    }, 1000);
+
     if (!recipient) {
-      console.log('do nothing');
+      console.log("do nothing");
     } else {
-      if (recipient.typeOf === 'channel') {
+      if (recipient.typeOf === "channel") {
         fetch(`http://localhost:9292/channels/${recipient.name}/messages`)
           .then((response) => response.json())
           .then((data) => {
@@ -32,18 +40,25 @@ function Chat({ recipient, user }) {
                   .includes(sendSearchChat.toLowerCase());
               });
               newData.messages = filteredMessages;
-              setAllMessages(newData);
+              setAllChannelMessages(newData);
+              setReadyToMount(true);
             } else {
-              setAllMessages(data);
+              setAllChannelMessages(data);
+              setReadyToMount(true);
             }
           })
           .catch((error) => window.alert(error));
-      } else if (recipient.typeOf === 'user') {
-        fetch(`http://localhost:9292/channels/${recipient.name}/messages`)
+      } else if (recipient.typeOf === "user") {
+        fetch(
+          `http://localhost:9292/users/${user.id}/messages/${recipient.name}`
+        )
           .then((response) => response.json())
           .then((data) => {
             let newData;
-            if (sendSearchChat) {
+            if (data === []) {
+              setAllDirectMessages(null);
+              setReadyToMount(true);
+            } else if (sendSearchChat) {
               newData = { ...data };
               const filteredMessages = data.messages.filter((message) => {
                 return message.username
@@ -51,17 +66,30 @@ function Chat({ recipient, user }) {
                   .includes(sendSearchChat.toLowerCase());
               });
               newData.messages = filteredMessages;
-              setAllMessages(newData);
+              setAllDirectMessages(newData);
+              setReadyToMount(true);
             } else {
-              setAllMessages(data);
+              setAllDirectMessages(data);
+              setReadyToMount(true);
             }
           })
           .catch((error) => window.alert(error));
       } else {
-        console.log('something is up');
+        console.log("something is up");
       }
     }
-  }, [sendSearchChat, recipient]);
+
+    return function cleanup() {
+      clearInterval(timerID);
+    };
+  }, [sendSearchChat, recipient, renderTime]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [recipient]);
 
   function handleChange(e) {
     e.preventDefault();
@@ -70,21 +98,51 @@ function Chat({ recipient, user }) {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    console.log('sending a message');
+    console.log("sending a message");
 
-    //   fetch("http://localhost:9292", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(newMessage),
-    //   })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       setResponse(data);
-    //     })
-    //     .catch((error) => window.alert(error));
+    if (recipient.typeOf === "user") {
+      fetch("http://localhost:9292/users/friends/send_message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: newMessage,
+          user_id: user.id,
+          recipient: recipient.name,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setAllDirectMessages([...allDirectMessages, data]);
+          setNewMessage("");
+        })
+        .catch((error) => window.alert(error));
+    } else if (recipient.typeOf === "channel") {
+      fetch("http://localhost:9292/users/channels/send_message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: newMessage,
+          user_id: user.id,
+          recipient: recipient.name,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const newData = { ...allChannelMessages };
+          const updatedMessages = [...newData.messages, data];
+          newData.messages = updatedMessages;
+          setAllChannelMessages(newData);
+          setNewMessage("");
+        })
+        .catch((error) => window.alert(error));
+    }
   };
+
+  console.log(allChannelMessages);
 
   function handleSearchChange(e) {
     e.preventDefault();
@@ -97,8 +155,40 @@ function Chat({ recipient, user }) {
 
   function handleClearSearch(e) {
     e.preventDefault();
-    setSearchChat('');
-    setSendSearchChat('');
+    setSearchChat("");
+    setSendSearchChat("");
+  }
+
+  function channelOrDm() {
+    if (recipient.typeOf === "channel") {
+      return allChannelMessages.messages.map((message) => {
+        return (
+          <Message
+            key={message.message_id}
+            username={message.username}
+            user_id={message.user_id}
+            recipient={recipient}
+            message={message.body}
+            searchChat={sendSearchChat}
+            loggedInUserId={user.id}
+          />
+        );
+      });
+    } else if (recipient.typeOf === "user") {
+      return allDirectMessages.map((message) => {
+        console.log(message);
+        return (
+          <Message
+            key={message.id}
+            username={recipient.name}
+            user_id={message.user_id}
+            message={message.body}
+            searchChat={sendSearchChat}
+            loggedInUserId={user.id}
+          />
+        );
+      });
+    }
   }
 
   return (
@@ -135,21 +225,8 @@ function Chat({ recipient, user }) {
         </div>
       </header>
       <main className="flex-grow overflow-y-scroll scrollbar-hide">
-        {allMessages
-          ? allMessages.messages.map((message) => {
-              return (
-                <Message
-                  key={message.message_id}
-                  username={message.username}
-                  user_id={message.user_id}
-                  recipient={recipient}
-                  message={message.body}
-                  searchChat={sendSearchChat}
-                  loggedInUserId={user.id}
-                />
-              );
-            })
-          : 'lodaing'}
+        {readyToMount ? channelOrDm() : "lodaing"}
+        <div ref={bottomRef} />
       </main>
       <div className="flex items-center p-2.5 bg-[#40444b] mx-5 mb-7 rounded-lg">
         <form className="flex-grow">

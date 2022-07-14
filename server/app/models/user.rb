@@ -26,6 +26,21 @@ class User < ActiveRecord::Base
     end
   end
 
+  def channel_user?(channel)
+    channel_user =
+      self.channel_users.find do |channel_user|
+        (
+          channel_user.channel_id == channel.id &&
+            channel_user.user_id == self.id
+        )
+      end
+    if channel_user
+      return channel_user
+    else
+      return false
+    end
+  end
+
   def connections
     self
       .pairs
@@ -95,10 +110,13 @@ class User < ActiveRecord::Base
 
   # methods meant to be used to communicate with front end
   def become_friends(user)
-    create_connection(user) if (!self.connection?(user))
-    if (!friends?(user))
-      binding.pry
-      self.pair?(user).update(friend: true)
+    self.create_connection(user) if (!self.connection?(user))
+    if (!self.friends?(user))
+      new_self = User.find_by(id: self.id)
+      new_user = User.find_by(id: user.id)
+      # binding.pry
+      pair = new_self.pair?(new_user)
+      pair.update(friend: true)
     else
       "You are already friends with this person!"
     end
@@ -118,11 +136,13 @@ class User < ActiveRecord::Base
     PairMessage.create(user: self, user_pair: pair, body: message)
   end
 
-  # def send_channel_message(channel, message)
-  #   create_channel_connection(channel) if (!channel_connection?(channel))
-  #   post_to = self.pair?(user)
-  #   PairMessage.create(user: self, user_pair: pair, body: message)
-  # end
+  def send_channel_message(channel, message)
+    if (!self.channel_connection?(channel))
+      self.create_channel_connection(channel)
+    end
+    post_to = self.channel_user?(channel)
+    ChannelMessage.create(user: self, channel: channel, body: message)
+  end
 
   def current_pair_messages(user)
     messages = self.pair?(user).pair_messages

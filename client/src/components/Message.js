@@ -1,7 +1,8 @@
-import React from 'react';
-import { TrashIcon } from '@heroicons/react/solid';
+import React from "react";
+import { TrashIcon } from "@heroicons/react/solid";
 
-function Message({ user_id, recipinet, message, username, loggedInUserId }) {
+function Message({ user_id, message, username, loggedInUserId }) {
+  console.log(user_id, message, username, loggedInUserId);
   return (
     <div className="flex items-center p-1 pl-5 my-5 mr-2 hover:bg-[#32353B] group">
       {loggedInUserId === user_id ? (

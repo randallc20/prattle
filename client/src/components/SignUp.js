@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function SignUp() {
+function SignUp({ setResponse }) {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: '',
-    name: '',
+    username: "",
+    password: "",
+    email: "",
+    name: "",
   });
 
   function handleChange(e) {
@@ -18,15 +18,22 @@ function SignUp() {
   function handleFormSubmit(e) {
     e.preventDefault();
     console.log(formData);
-    fetch('http://localhost:9292', {
-      method: 'POST',
+    fetch("http://localhost:9292/signup", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then((data) => setSuccess(data.success))
+      .then((data) => {
+        if (data.success) {
+          setResponse(data);
+          navigate("/");
+        } else {
+          alert("Please try again!");
+        }
+      })
       .catch((error) => window.alert(error));
   }
 
@@ -91,9 +98,9 @@ function SignUp() {
             <div className="mt-8 flex flex-col gap-y-4">
               <button
                 className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-violet-500 rounded-xl text-white font-bold text-lg"
-                onClick={() => {
-                  navigate('/');
-                }}
+                // onClick={() => {
+                //   navigate("/");
+                // }}
               >
                 Sign Up
               </button>
