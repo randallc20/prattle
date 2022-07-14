@@ -94,22 +94,21 @@ class ApplicationController < Sinatra::Base
 
   ## two users become friends
   post "/user/add_friend" do
-    binding.pry
     user = User.find_by(id: params[:userId])
     new_friend = User.find_by(username: params[:friendName])
     if (new_friend)
       if (user.friends?(new_friend))
-        { error: "you and #{friendName} are already friends" }.to_json
+        { error: "you and #{params[:friendName]} are already friends" }.to_json
       else
         user.become_friends(new_friend)
-        binding.pry
+        # binding.pry
         {
           "username" => new_friend.attributes["username"],
           "id" => new_friend.attributes["id"]
         }.to_json
       end
     else
-      { error: "#{friendName} does not exist" }.to_json
+      { error: "#{params[:friendName]} does not exist" }.to_json
     end
   end
 
@@ -124,6 +123,18 @@ class ApplicationController < Sinatra::Base
     user = User.find_by(id: params[:id])
     connection = User.find_by(username: params[:username])
     user.current_pair_messages(connection).to_json
+  end
+
+  post "/users/friends/send_message" do
+    user = User.find_by(id: params[:user_id])
+    recipient = User.find_by(username: params[:recipient])
+    user.send_pair_message(recipient, params[:message]).to_json
+  end
+
+  post "/users/channels/send_message" do
+    user = User.find_by(id: params[:user_id])
+    recipient = Channel.find_by(channel_name: params[:recipient])
+    user.send_channel_message(recipient, params[:message]).to_json
   end
 
   ## returns a list of all of the channel names

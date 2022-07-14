@@ -1,9 +1,10 @@
-import React from 'react';
-import { HashtagIcon } from '@heroicons/react/outline';
+import React from "react";
+import { HashtagIcon } from "@heroicons/react/outline";
 
-function Channel({ id, channelName, setRecipient }) {
+function Channel({ id, channelName, setRecipient, setReadyToMount }) {
   function dislayChannel() {
-    setRecipient({ name: channelName, typeOf: 'channel' });
+    setReadyToMount(false);
+    setRecipient({ name: channelName, typeOf: "channel" });
   }
 
   return (

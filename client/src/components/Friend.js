@@ -1,9 +1,10 @@
-import React from 'react';
-import { HashtagIcon } from '@heroicons/react/outline';
+import React from "react";
+import { HashtagIcon } from "@heroicons/react/outline";
 
-function Friend({ id, friendName, setRecipient }) {
+function Friend({ id, friendName, setRecipient, setReadyToMount }) {
   function displayFriend() {
-    setRecipient({ name: friendName, typeOf: 'user' });
+    setReadyToMount(false);
+    setRecipient({ name: friendName, typeOf: "user" });
   }
   return (
     <div
