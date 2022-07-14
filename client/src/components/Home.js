@@ -15,8 +15,15 @@ import Friend from "../components/Friend";
 function Home({ response }) {
   const [user, setUser] = useState(null);
   const [channel, setChannel] = useState(null);
+  const [allUserChannels, setAllUserChannels] = useState(null);
+  const [channelSearch, setChannelSearch] = useState("");
+  const [sendChannelSearch, setSendChannelSearch] = useState("");
 
   let navigate = useNavigate();
+
+  if (user && !allUserChannels) {
+    setAllUserChannels(user.channels);
+  }
 
   useEffect(() => {
     if (!response) {
@@ -25,25 +32,85 @@ function Home({ response }) {
       fetch(`http://localhost:9292/users/${response.user_id}`)
         .then((response) => response.json())
         .then((data) => {
-          setUser(data);
+          let newData;
+          if (sendChannelSearch) {
+            newData = { ...data };
+            const filteredChannels = data.channels.filter((channel) => {
+              return channel.channel_name
+                .toLowerCase()
+                .includes(sendChannelSearch.toLowerCase());
+            });
+            newData.channels = filteredChannels;
+            setAllUserChannels(filteredChannels);
+            setUser(newData);
+          } else {
+            setAllUserChannels(data.channels);
+            setUser(data);
+          }
         })
         .catch((error) => window.alert(error));
     }
-  }, []);
+  }, [sendChannelSearch]);
 
-  const handleAddChannel = () => {
-    const newChannelName = prompt('Enter a new channel name');
-    console.log('This is where we are making a new channel: ' + newChannelName);
+  const handleJoinChannel = () => {
+    const newChannelName = prompt("Enter a channel to join");
+    console.log(
+      "This is where we are joining a new channel: " + newChannelName
+    );
     if (newChannelName) {
-      //add the channel to the database - do I need a form?
+      fetch(`http://localhost:9292/channels/join`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channelName: newChannelName,
+          userId: response.user_id,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            window.alert(data.error);
+          } else {
+            setAllUserChannels((allUserChannels) => [...allUserChannels, data]);
+          }
+        })
+        .catch((error) => window.alert(error));
+    }
+  };
+
+  const handleCreateChannel = () => {
+    const newChannelName = prompt("Enter a new channel name");
+    console.log("This is where we are making a new channel: " + newChannelName);
+    if (newChannelName) {
+      fetch("http://localhost:9292/channels", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channelName: newChannelName,
+          userId: response.user_id,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            window.alert(data.error);
+          } else {
+            setAllUserChannels((allUserChannels) => [...allUserChannels, data]);
+          }
+        })
+        .catch((error) => window.alert(error));
     }
   };
 
   function handleAddFriend() {
     //need user id of logged in user
     //and the username of the new friend or the id of new friend
-    const newFriendName = prompt('Enter a new friend name');
-    console.log('This is the name of a new friend: ' + newFriendName);
+    const newFriendName = prompt("Enter a new friend name");
+    console.log("This is the name of a new friend: " + newFriendName);
     if (newFriendName) {
     }
   }
@@ -56,6 +123,20 @@ function Home({ response }) {
   function logOut() {
     response = null;
     navigate("/");
+  }
+
+  function handleChannelSearchChange(e) {
+    setChannelSearch(e.target.value);
+  }
+
+  function handleChannelSearchClick() {
+    setSendChannelSearch(channelSearch);
+  }
+
+  function handleChannelClearSearch(e) {
+    e.preventDefault();
+    setChannelSearch("");
+    setSendChannelSearch("");
   }
 
   return (
@@ -71,27 +152,42 @@ function Home({ response }) {
                 <input
                   type="text"
                   placeholder="Search"
+                  value={channelSearch}
                   className="bg-[#202225] focus:outline-none text-white pl-1 placeholder-[#72767d]"
+                  onChange={handleChannelSearchChange}
                 />
-                <SearchIcon className="h-4 text-[#72767d] mr-1" />
+                <SearchIcon
+                  onClick={handleChannelSearchClick}
+                  className="h-4 text-[#72767d] mr-1"
+                />
               </div>
+              <button onClick={handleChannelClearSearch}>Clear</button>
               <div className="text-[#8e9297] flex-grow overflow-y-scroll scrollbar-hide">
                 <div className="flex items-center p-2 mb-2">
-                  <h4 className="font-semibold ">Channels</h4>
+                  <h4 className="font-semibold ">Join Channel</h4>
                   <PlusIcon
                     className="h-6 ml-auto cursor-pointer hover:text-white"
-                    onClick={handleAddChannel}
+                    onClick={handleJoinChannel}
                   />
                 </div>
                 <div className="flex flex-col space-y-2 px-2 mb-4">
-                  {user.channels.map((channel) => (
-                    <Channel
-                      key={channel.id}
-                      id={channel.id}
-                      channelName={channel.channel_name}
-                      setChannel={setChannel}
-                    />
-                  ))}
+                  {allUserChannels
+                    ? allUserChannels.map((channel) => (
+                        <Channel
+                          key={channel.id}
+                          id={channel.id}
+                          channelName={channel.channel_name}
+                          setChannel={setChannel}
+                        />
+                      ))
+                    : null}
+                </div>
+                <div className="flex items-center p-2 mb-2">
+                  <h4 className="font-semibold ">Create Channel</h4>
+                  <PlusIcon
+                    className="h-6 ml-auto cursor-pointer hover:text-white"
+                    onClick={handleCreateChannel}
+                  />
                 </div>
               </div>
               <div className="bg-[#292b2f] p-2 flex justify-between items-center space-x-8">
@@ -128,7 +224,11 @@ function Home({ response }) {
               </div>
             </div>
             <div className="bg-[#36393f] flex-grow">
-              {channel ? <Chat channel={channel} /> : "loading"}
+              {channel ? (
+                <Chat channel={channel} />
+              ) : (
+                "Please select a channel or friend"
+              )}
             </div>
             <div className="bg-[#2f3136] flex flex-col min-w-max">
               <h2 className="flex text-white font-bold text-sm items-center justify-between border-b border-gray-800 p-4 hover:bg-[#34373C] cursor-pointer">
@@ -136,7 +236,7 @@ function Home({ response }) {
               </h2>
               <div className="text-[#8e9297] flex-grow overflow-y-scroll scrollbar-hide">
                 <div className="flex items-center p-2 mb-2">
-                  <h4 className="font-semibold ">Friends</h4>
+                  <h4 className="font-semibold ">Add Friend</h4>
                   <PlusIcon
                     className="h-6 ml-auto cursor-pointer hover:text-white"
                     onClick={handleAddFriend}

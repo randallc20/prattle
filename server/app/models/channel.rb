@@ -5,7 +5,7 @@ class Channel < ActiveRecord::Base
   has_many :channel_messages
 
   def self.sort_channels
-    self.order("channel_name")
+    self.order("lower(channel_name)")
   end
 
   def serialize_channel_messages
