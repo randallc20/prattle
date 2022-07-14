@@ -112,7 +112,27 @@ class ApplicationController < Sinatra::Base
 
   ## creates a new channel
   post "/channels" do
-    Channel.create(channel_name: params[:channelName]).to_json
+    channel_exists = Channel.find_by(channel_name: params[:channelName])
+    if (!channel_exists)
+      new_channel = Channel.create(channel_name: params[:channelName])
+      created_by = User.find_by(id: params[:userId])
+      ChannelUser.create(user: created_by, channel: new_channel)
+      new_channel.to_json
+    else
+      { error: "channel already exists" }.to_json
+    end
+  end
+
+  ## join a new channel
+  post "/channels/join" do
+    channel_exists = Channel.find_by(channel_name: params[:channelName])
+    if (channel_exists)
+      joined_by = User.find_by(id: params[:userId])
+      ChannelUser.create(user: joined_by, channel: channel_exists)
+      channel_exists.to_json
+    else
+      { error: "channel does not exist" }.to_json
+    end
   end
 
   ## returns all the messages for a particular channel

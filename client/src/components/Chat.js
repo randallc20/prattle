@@ -1,41 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { HashtagIcon, SearchIcon } from '@heroicons/react/outline';
+import React, { useState, useEffect } from "react";
+import { HashtagIcon, SearchIcon } from "@heroicons/react/outline";
 import {
   BellIcon,
   ChatIcon,
   UsersIcon,
   InboxIcon,
   QuestionMarkCircleIcon,
-} from '@heroicons/react/solid';
-import Message from './Message';
+} from "@heroicons/react/solid";
+import Message from "./Message";
 
 function Chat({ channel }) {
-  const [newMessage, setNewMessage] = useState('');
-  const [allMessages, setAllMessages] = useState('');
+  const [newMessage, setNewMessage] = useState("");
+  const [allMessages, setAllMessages] = useState("");
+  const [searchChat, setSearchChat] = useState("");
+  const [sendSearchChat, setSendSearchChat] = useState("");
 
   useEffect(() => {
     if (!channel) {
-      console.log('do nothing');
+      console.log("do nothing");
     } else {
       fetch(`http://localhost:9292/channels/${channel}/messages`)
         .then((response) => response.json())
         .then((data) => {
-          console.log('test');
-          setAllMessages(data);
+          let newData;
+          if (sendSearchChat) {
+            newData = { ...data };
+            const filteredMessages = data.messages.filter((message) => {
+              return message.username
+                .toLowerCase()
+                .includes(sendSearchChat.toLowerCase());
+            });
+            newData.messages = filteredMessages;
+            setAllMessages(newData);
+          } else {
+            setAllMessages(data);
+          }
         })
         .catch((error) => window.alert(error));
     }
-  }, []);
+  }, [sendSearchChat, channel]);
 
   function handleChange(e) {
     e.preventDefault();
     setNewMessage(e.target.value);
-    console.log(newMessage);
   }
 
   const sendMessage = (e) => {
     e.preventDefault();
-    console.log('sending a message');
+    console.log("sending a message");
 
     //send the message to the database
 
@@ -54,6 +66,21 @@ function Chat({ channel }) {
     //   .catch((error) => window.alert(error));
   };
 
+  function handleSearchChange(e) {
+    e.preventDefault();
+    setSearchChat(e.target.value);
+  }
+
+  function handleSearchClick() {
+    setSendSearchChat(searchChat);
+  }
+
+  function handleClearSearch(e) {
+    e.preventDefault();
+    setSearchChat("");
+    setSendSearchChat("");
+  }
+
   return (
     <div className="flex flex-col h-screen">
       <header className="flex items-center justify-between space-x-5 border-b border-gray-800 p-4 -mt-1">
@@ -69,9 +96,15 @@ function Chat({ channel }) {
               type="text"
               placeholder="Search"
               className="bg-[#202225] focus:outline-none text-white pl-1 placeholder-[#72767d]"
+              value={searchChat}
+              onChange={handleSearchChange}
             />
-            <SearchIcon className="h-4 text-[#72767d] mr-1" />
+            <SearchIcon
+              onClick={handleSearchClick}
+              className="h-4 text-[#72767d] mr-1"
+            />
           </div>
+          <button onClick={handleClearSearch}>Clear</button>
           <InboxIcon className="icon" />
           <QuestionMarkCircleIcon className="icon" />
         </div>
@@ -86,10 +119,11 @@ function Chat({ channel }) {
                   user_id={message.user_id}
                   recipient={channel}
                   message={message.body}
+                  searchChat={sendSearchChat}
                 />
               );
             })
-          : 'lodaing'}
+          : "lodaing"}
       </main>
       <div className="flex items-center p-2.5 bg-[#40444b] mx-5 mb-7 rounded-lg">
         <form className="flex-grow">
